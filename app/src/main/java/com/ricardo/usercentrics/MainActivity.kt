@@ -9,10 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.ricardo.usercentrics.presentation.calculatorRoute
-import com.ricardo.usercentrics.presentation.calculatorScreen
+import com.ricardo.usercentrics.presentation.calculator.calculatorRoute
+import com.ricardo.usercentrics.presentation.calculator.calculatorScreen
 import com.ricardo.usercentrics.ui.theme.UsercentricsTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +34,7 @@ private fun Content() {
             NavHost(
                 navController = navController, startDestination = calculatorRoute
             ) {
-                calculatorScreen()
+                calculatorScreen(navController::navigate)
             }
         }
     }
