@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
@@ -32,6 +31,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.ricardo.usercentrics.R
+import com.ricardo.usercentrics.composable.AutoResizeText
+import com.ricardo.usercentrics.composable.FontSizeRange
 import com.ricardo.usercentrics.composable.UsercentricsPreview
 import com.ricardo.usercentrics.domain.model.Service
 import com.ricardo.usercentrics.ui.theme.UsercentricsTheme
@@ -77,6 +78,8 @@ private fun RealCalculatorScreen(
     onShowConsentClick: () -> Unit,
 ) {
     when (uiState) {
+        CalculatorUiState.Calculating -> CalculatorLoading(calculating = true)
+
         CalculatorUiState.Initializing -> CalculatorLoading()
 
         is CalculatorUiState.Idle -> CalculatorReady(
@@ -149,20 +152,17 @@ private fun CalculatorReadyLandscape(
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(1f),
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(align = Alignment.Bottom),
+                AutoResizeText(
+                    modifier = Modifier.fillMaxWidth(),
                     text = count.toString(),
-                    fontSize = 150.sp,
                     textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    fontSizeRange = FontSizeRange(max = 100.sp)
                 )
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(align = Alignment.Top),
                     text = stringResource(id = R.string.consent_score),
                     textAlign = TextAlign.Center,
                 )
@@ -193,19 +193,16 @@ private fun CalculatorReadyPortrait(
 ) {
     Column(
         modifier = modifier.padding(12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight(align = Alignment.Bottom),
+        AutoResizeText(
+            modifier = Modifier.fillMaxWidth(),
             text = count.toString(),
-            fontSize = 150.sp,
             textAlign = TextAlign.Center,
+            maxLines = 1,
+            fontSizeRange = FontSizeRange(max = 100.sp)
         )
         Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight(align = Alignment.Top),
             text = stringResource(id = R.string.consent_score),
             textAlign = TextAlign.Center,
         )
@@ -256,24 +253,30 @@ private fun ShowService(
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f), text = service.name
+                .weight(1f),
+            text = service.name
         )
         Text(text = service.cost.toString())
     }
 }
 
 @Composable
-private fun CalculatorLoading(modifier: Modifier = Modifier) {
-    Box(
+private fun CalculatorLoading(modifier: Modifier = Modifier, calculating: Boolean = false) {
+    Column(
         modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         CircularProgressIndicator()
+        if (calculating) {
+            Text(text = stringResource(id = R.string.calculating_costs))
+        }
     }
 }
 
 private class CalculatorUiStateProvider : PreviewParameterProvider<CalculatorUiState> {
     override val values = sequenceOf(
+        CalculatorUiState.Calculating,
         CalculatorUiState.Initializing,
         CalculatorUiState.Idle(
             services = listOf(

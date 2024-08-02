@@ -49,12 +49,16 @@ class CalculatorViewModel @Inject constructor(
     }
 
     fun calculate(userResponse: UsercentricsConsentUserResponse?) {
-        userResponse?.let {
-            val services = servicesCostsUseCase(userResponse)
-            val totalCost = calculateTotalCostsUseCase(services)
+        viewModelScope.launch {
+            viewModelState.update { CalculatorUiState.Calculating }
 
-            viewModelState.update { CalculatorUiState.Idle(services, totalCost) }
+            userResponse?.let {
+                val services = servicesCostsUseCase(userResponse)
+                val totalCost = calculateTotalCostsUseCase(services)
 
-        } ?: viewModelState.update { CalculatorUiState.Error }
+                viewModelState.update { CalculatorUiState.Idle(services, totalCost) }
+
+            } ?: viewModelState.update { CalculatorUiState.Error }
+        }
     }
 }

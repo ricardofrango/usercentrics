@@ -8,6 +8,8 @@ import com.ricardo.usercentrics.domain.model.Service
 import com.usercentrics.sdk.Usercentrics
 import com.usercentrics.sdk.UsercentricsConsentUserResponse
 import com.usercentrics.sdk.v2.settings.data.UsercentricsService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.roundToInt
@@ -23,26 +25,27 @@ class ServicesCostsUseCase @Inject constructor(
     private val usercentricsSDK
         get() = Usercentrics.instance
 
-    operator fun invoke(userResponse: UsercentricsConsentUserResponse): List<Service> {
-        val cmpData = usercentricsSDK.getCMPData()
+    suspend operator fun invoke(userResponse: UsercentricsConsentUserResponse): List<Service> =
+        withContext(Dispatchers.Default) {
+            val cmpData = usercentricsSDK.getCMPData()
 
-        // get the list of templateId of the consents with status = true
-        val consents = userResponse.consents
-            .filter { it.status }
-            .map { it.templateId }
+            // get the list of templateId of the consents with status = true
+            val consents = userResponse.consents
+                .filter { it.status }
+                .map { it.templateId }
 
-        // get the consented services by the templatedId
-        val servicesConsented = cmpData.services
-            .filter { consents.contains(it.templateId) }
+            // get the consented services by the templatedId
+            val servicesConsented = cmpData.services
+                .filter { consents.contains(it.templateId) }
 
-        // get the services with their cost
-        return servicesConsented.map {
-            Service(
-                name = it.dataProcessor ?: "",
-                cost = calculateServiceCost(it)
-            )
+            // get the services with their cost
+            return@withContext servicesConsented.map { usercentricsServices ->
+                Service(
+                    name = usercentricsServices.dataProcessor ?: "",
+                    cost = calculateServiceCost(usercentricsServices)
+                )
+            }
         }
-    }
 
     private fun calculateServiceCost(usercentricsService: UsercentricsService): Int {
         val cost = usercentricsService.dataCollectedList.sumOf { costsMap[it] ?: 0.0 }
