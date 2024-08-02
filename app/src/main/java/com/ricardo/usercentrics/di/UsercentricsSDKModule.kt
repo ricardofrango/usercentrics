@@ -26,7 +26,8 @@ interface UsercentricsSDKModule {
             @UsercentricsSettingsKey usercentricsSettingsKey: String
         ) = UsercentricsOptions(
             settingsId = usercentricsSettingsKey,
-            loggerLevel = UsercentricsLoggerLevel.ERROR
+            loggerLevel = UsercentricsLoggerLevel.ERROR,
+            defaultLanguage = "en"
         )
     }
 }

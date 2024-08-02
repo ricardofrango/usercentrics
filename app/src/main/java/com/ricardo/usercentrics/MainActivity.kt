@@ -32,9 +32,10 @@ private fun Content() {
             modifier = Modifier.fillMaxSize()
         ) {
             NavHost(
-                navController = navController, startDestination = calculatorRoute
+                navController = navController,
+                startDestination = calculatorRoute
             ) {
-                calculatorScreen(navController::navigate)
+                calculatorScreen()
             }
         }
     }
