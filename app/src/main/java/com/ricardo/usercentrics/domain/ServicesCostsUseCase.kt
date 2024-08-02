@@ -10,6 +10,7 @@ import com.usercentrics.sdk.UsercentricsConsentUserResponse
 import com.usercentrics.sdk.v2.settings.data.UsercentricsService
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.roundToInt
 
 @Singleton
 @JvmSuppressWildcards
@@ -59,6 +60,6 @@ class ServicesCostsUseCase @Inject constructor(
             result -= cost * 0.1
         }
 
-        return result.toInt()
+        return result.roundToInt()
     }
 }
