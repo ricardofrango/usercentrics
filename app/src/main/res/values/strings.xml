@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Usercentrics</string>
+    <string name="show_consent_banner">Show Consent Banner</string>
+    <string name="error_initiating_sdk">Error initializing</string>
+    <string name="consent_score">Consent score</string>
 </resources>
