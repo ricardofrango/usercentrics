@@ -55,6 +55,7 @@ Instead of showing the cost for each service, I develop a list to show the servi
 ## TODO's 🔨🔨
 
 1. Some services are repeated. Maybe it could be interesting to merge the repeated services and sum their individual cost.
+2. Show in the list what rules were applied for each individual service
 
 ## Support
 
